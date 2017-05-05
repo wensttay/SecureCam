@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.wensttay.securecam_project.activity.ControllConfigActivity"
+    android:background="@color/colorBackground">
+
+    <TextView
+        android:id="@+id/codeDescription"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Digite o código da WebCam e acione qualquer um dos botões abaixo."
+        android:textColor="@color/colorSmallText"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp" />
+
+    <EditText
+        android:id="@+id/camCodeInput"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="CAM AS324NH-526"
+        android:inputType="text"
+        android:textSize="22sp"
+        android:textColor="@color/colorFeaturedText"
+        android:textColorHint="@color/colorSmallText"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/codeDescription" />
+
+    <Button
+        android:id="@+id/recordAMinutButton"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/colorRedButton"
+        android:text="Gravar por 1 minuto"
+        android:textAllCaps="false"
+        android:textColor="@color/colorTextButtonDark"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/camCodeInput" />
+
+    <Button
+        android:id="@+id/seeRecordsButton"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorYellowButton"
+        android:onClick="showRecorListPage"
+        android:text="Ver gravações"
+        android:textAllCaps="false"
+        android:textColor="@color/colorTextButtonLight"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recordAMinutButton" />
+
+    <Button
+        android:id="@+id/watchLiveButton"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:background="@color/colorGreenButton"
+        android:text="Assistir ao vivo"
+        android:textAllCaps="false"
+        android:textColor="@color/colorTextButtonLight"
+        android:textSize="24sp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/seeRecordsButton"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+</android.support.constraint.ConstraintLayout>
