@@ -92,7 +92,7 @@ public class SelectRecordActivity extends AppCompatActivity {
         return (super.onOptionsItemSelected(menuItem));
     }
 
-    public static List<RecordItem> getSecureVideos(Activity activity) {
+    public List<RecordItem> getSecureVideos(Activity activity) {
 
         List<RecordItem> recordItem = new ArrayList<>();
 
@@ -103,7 +103,7 @@ public class SelectRecordActivity extends AppCompatActivity {
                 MediaStore.Video.VideoColumns.DATE_TAKEN,
                 MediaStore.Video.VideoColumns.DATA};
 
-        String selection =  MediaStore.Video.VideoColumns.DATA +" LIKE '%SecureCAM%'";
+        String selection =  MediaStore.Video.VideoColumns.DATA +" LIKE '%" + getApplicationContext().getResources().getString(R.string.app_album_file) + "%'";
 //        String[] selectionArgs = new String[] { "SecureCAM" };
         Cursor cursor = activity.getContentResolver().query(uri,
                 projection,

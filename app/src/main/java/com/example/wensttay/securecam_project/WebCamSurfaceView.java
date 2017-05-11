@@ -8,11 +8,12 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
+        Camera.PreviewCallback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
 
-    public CameraPreview(Context context, Camera camera) {
+    public WebCamSurfaceView(Context context, Camera camera) {
         super(context);
         mCamera = camera;
         mHolder = getHolder();
@@ -25,6 +26,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             // create the surface and start camera preview
             if (mCamera == null) {
+                mCamera.setPreviewCallback(this);
                 mCamera.setPreviewDisplay(holder);
                 mCamera.startPreview();
             }
@@ -49,6 +51,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // start preview with new settings
         setCamera(camera);
         try {
+            mCamera.setPreviewCallback(this);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
         } catch (Exception e) {
@@ -72,5 +75,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // TODO Auto-generated method stub
         // mCamera.release();
 
+    }
+
+    @Override
+    public void onPreviewFrame(byte[] data, Camera camera) {
+        System.out.println(data.length);
     }
 }
