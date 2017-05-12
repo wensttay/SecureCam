@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wensttay.securecam_project.RegisterCodeProvider;
 import com.example.wensttay.securecam_project.WebCamSurfaceView;
 import com.example.wensttay.securecam_project.R;
 
@@ -79,7 +80,7 @@ public class WebCamActivity extends AppCompatActivity {
 //        button_capture
 
         initialize();
-        String camCode = getIntent().getExtras().getString("CAM-CODE");
+        String camCode = getIntent().getExtras().getString(RegisterCodeProvider.CAM_PREFERENCES_CODE_TAG);
         codeTextView.setText(camCode);
 //        mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
 //            @Override
@@ -97,6 +98,7 @@ public class WebCamActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         if (!hasCamera(myContext)) {
             Toast toast = Toast.makeText(myContext, "Sorry, your phone does not have a camera!", Toast.LENGTH_LONG);
             toast.show();

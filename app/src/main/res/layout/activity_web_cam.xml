@@ -45,7 +45,8 @@
                     android:clickable="true"
                     android:src="@mipmap/white_thunder"
                     app:backgroundTint="@color/colorRedButton"
-                    app:rippleColor="@android:color/white" />
+                    app:rippleColor="@android:color/white"
+                    android:paddingBottom="5dp"/>
 
             </LinearLayout>
 
