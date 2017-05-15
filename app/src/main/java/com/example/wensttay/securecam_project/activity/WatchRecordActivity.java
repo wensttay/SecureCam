@@ -93,8 +93,6 @@ public class WatchRecordActivity extends AppCompatActivity {
                         supportActionBar.show();
                         mediaControls.show();
                     }
-
-//                    position = myVideoView.getCurrentPosition();
                     return false;
                 } else {
                     if (supportActionBar.isShowing()) {

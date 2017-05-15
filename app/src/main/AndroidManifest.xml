@@ -46,10 +46,6 @@
         <!-- android:configChanges="orientation|screenSize" -->
 
         <service android:name=".ConnectionServiceProvider"></service>
-        <service
-            android:name=".VideoResponseServiceProvider"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>
