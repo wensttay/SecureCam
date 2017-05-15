@@ -1,4 +1,4 @@
-package com.example.wensttay.securecam_project;
+package com.example.wensttay.securecam_project.handler;
 
 import android.os.Handler;
 
@@ -8,8 +8,6 @@ import android.os.Handler;
 
 public class StartMenuHandlerSingleton {
 
-    public static final String CONNECT_SUCCESS = "CONNECT-SUCCESS";
-    public static final String CONNECT_ERROR_MESSAGE = "ERROR-MESSAGE";
     private static Handler handler = null;
 
     public static void init(Handler.Callback callback){

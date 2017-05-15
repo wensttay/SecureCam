@@ -8,15 +8,18 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
-        Camera.PreviewCallback {
+import com.example.wensttay.securecam_project.activity.WebCamActivity;
+
+public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private Camera.PreviewCallback previewCallback;
 
-    public WebCamSurfaceView(Context context, Camera camera) {
+    public WebCamSurfaceView(Context context, Camera camera, Camera.PreviewCallback previewCallback) {
         super(context);
-        mCamera = camera;
-        mHolder = getHolder();
+        this.previewCallback = previewCallback;
+        this.mCamera = camera;
+        this.mHolder = getHolder();
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -26,7 +29,7 @@ public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Call
         try {
             // create the surface and start camera preview
             if (mCamera == null) {
-                mCamera.setPreviewCallback(this);
+                mCamera.setPreviewCallback(previewCallback);
                 mCamera.setPreviewDisplay(holder);
                 mCamera.startPreview();
             }
@@ -51,7 +54,7 @@ public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Call
         // start preview with new settings
         setCamera(camera);
         try {
-            mCamera.setPreviewCallback(this);
+            mCamera.setPreviewCallback(previewCallback);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
         } catch (Exception e) {
@@ -78,8 +81,8 @@ public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     }
 
-    @Override
-    public void onPreviewFrame(byte[] data, Camera camera) {
-        System.out.println(data.length);
-    }
+//    @Override
+//    public void onPreviewFrame(byte[] data, Camera camera) {
+//        System.out.println(data.length);
+//    }
 }

@@ -42,7 +42,7 @@
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode" />
             <!--android:configChanges="orientation|screenSize" -->
 
-        <service android:name=".RegisterCodeProvider">
+        <service android:name=".ConnectionServiceProvider">
 
         </service>
     </application>
