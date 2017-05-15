@@ -1,4 +1,4 @@
-package com.example.wensttay.securecam_project;
+package com.example.wensttay.securecam_project.surface;
 
 import java.io.IOException;
 
@@ -80,9 +80,4 @@ public class WebCamSurfaceView extends SurfaceView implements SurfaceHolder.Call
         // mCamera.release();
 
     }
-
-//    @Override
-//    public void onPreviewFrame(byte[] data, Camera camera) {
-//        System.out.println(data.length);
-//    }
 }

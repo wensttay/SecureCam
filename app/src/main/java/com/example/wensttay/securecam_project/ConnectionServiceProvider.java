@@ -27,29 +27,29 @@ import java.net.SocketException;
 
 public class ConnectionServiceProvider extends Service {
 
-    public final static String CAM_PREF_TAG = "CAM-PREFERENCES-CONFIG";
-    public final static String CAM_PREF_CODE_TAG = "CAM-PREFERENCES-CONFIG-CAM-CODE";
-    public final static String CAM_PREF_CONNECT_SUCCESS_TAG = "CONNECT-SUCCESS";
-    public final static String CAM_PREF_CONNECT_ERROR_MESSAGE_TAG = "ERROR-MESSAGE";
+        public final static String CAM_PREF_TAG = "CAM_PREF_TAG";
+    public final static String CAM_PREF_CODE_TAG = "CAM_PREF_CODE_TAG";
+    public final static String CAM_PREF_CONNECT_SUCCESS_TAG = "CAM_PREF_CONNECT_SUCCESS_TAG";
+    public final static String CAM_PREF_CONNECT_ERROR_MESSAGE_TAG = "CAM_PREF_CONNECT_ERROR_MESSAGE_TAG";
 
-    public final static String CAM_SERVER_REQUEST_CODE = "REQUEST-CAM-CODE";
-    public final static String CAM_SERVER_FAIL_RESPONSE = "FAIL-FIND-REGISTER";
-    public final static String CAM_SERVER_ALREADY_REGISTERED_RESPONSE = "OK-FIND-REGISTER";
+        public final static String CAM_SERVER_REQUEST_CODE = "CAM_SERVER_REQUEST_CODE";
+    public final static String CAM_SERVER_FAIL_RESPONSE = "CAM_SERVER_FAIL_RESPONSE";
+    public final static String CAM_SERVER_ALREADY_REGISTERED_RESPONSE = "CAM_SERVER_ALREADY_REGISTERED_RESPONSE";
     public final static String CAM_SERVER_PING_ASK = "OK?";
     public final static String CAM_SERVER_PING_ANSWER = "OK";
 
-    public final static String CAM_SERVER_COMMAND_TAG = "CAM_SERVER_COMMAND_TAG";
+        public final static String CAM_SERVER_COMMAND_TAG = "CAM_SERVER_COMMAND_TAG";
     public final static String CAM_SERVER_COMMAND_RECORD_A_MINUT = "CAM_SERVER_COMMAND_RECORD_A_MINUT";
     public final static String CAM_SERVER_COMMAND_STREAM = "CAM_SERVER_COMMAND_STREAM";
-
+    public final static String CAM_SERVER_COMMAND_FLASHLIGHT = "CAM_SERVER_COMMAND_FLASHLIGHT";
     public final static String CAM_SERVER_COMMAND_FAIL = "CAM_SERVER_COMMAND_FAIL";
 
-    public final static String CONNECTION_PROV_COMAND_TAG = "SERVICE_COMAND";
-    public final static String CONNECTION_PROV_START = "START_CONNECTION";
-    public final static String CONNECTION_PROV_LISTEN = "LISTEN_CONNECTION";
+        public final static String CONNECTION_PROV_COMAND_TAG = "CONNECTION_PROV_COMAND_TAG";
+    public final static String CONNECTION_PROV_START = "CONNECTION_PROV_START";
+    public final static String CONNECTION_PROV_LISTEN = "CONNECTION_PROV_LISTEN";
+    public final static String CONNECTION_PROV_LISTEN_STOP = "CONNECTION_PROV_LISTEN_STOP";
     public final static String CONNECTION_PROV_SEND_A_FRAME = "CONNECTION_PROV_SEND_A_FRAME";
     public final static String CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY = "CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY";
-    public final static String CONNECTION_PROV_LISTEN_STOP = "CONNECTION_PROV_LISTEN_STOP";
     public final static String FINISH_CONNECTION = "FINISH_CONNECTION";
 
     public final static String HOST = "192.168.0.105";
@@ -62,15 +62,12 @@ public class ConnectionServiceProvider extends Service {
     private Socket socket;
     private String code;
 
-    private InputStream listenServerInputStrem = null;
-    private OutputStream listenServerOutputStream = null;
-
     @Override
     public void onCreate(){
         super.onCreate();
         preferences = getApplicationContext().getSharedPreferences(CAM_PREF_TAG, MODE_PRIVATE );
         editor = preferences.edit();
-        code =  preferences.getString(CAM_PREF_CODE_TAG, CAM_SERVER_REQUEST_CODE);
+        code = preferences.getString(CAM_PREF_CODE_TAG, CAM_SERVER_REQUEST_CODE);
     }
 
     @Override
@@ -86,13 +83,6 @@ public class ConnectionServiceProvider extends Service {
             case CONNECTION_PROV_LISTEN:
                 listenServer();
                 break;
-            case CONNECTION_PROV_LISTEN_STOP:
-                stopListenServer();
-                break;
-            case CONNECTION_PROV_SEND_A_FRAME:
-                byte[] byteArray = intent.getExtras().getByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY);
-                sendAFrame(byteArray);
-                break;
             case FINISH_CONNECTION:
                 Log.i("SECURE-CAM", "FINISH_CONNECTION Option selected");
                 finishConnection();
@@ -101,71 +91,13 @@ public class ConnectionServiceProvider extends Service {
         return START_NOT_STICKY;
     }
 
-
-    private void sendAFrame(byte[] byteArray) {
-        if(isListenAServer){
-            try {
-                listenServerOutputStream = socket.getOutputStream();
-                Log.i("SECURE-CAM", "Sending a array of bytes: " + byteArray.length);
-                listenServerOutputStream.write(byteArray);
-                listenServerOutputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void stopListenServer(){
-        isListenAServer = false;
-        if(listenServerInputStrem != null){
-            try {
-                listenServerInputStrem.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        listenServerInputStrem = null;
-        if(listenServerOutputStream != null){
-            try {
-                listenServerOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        listenServerOutputStream = null;
-    }
-
     private void listenServer() {
         Log.i("SECURE-CAM", "Starting listenServer()");
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-
                 try {
-                    if (isListenAServer){
-                        throw new AlreadyListeningAServer();
-                    } else {
-                        isListenAServer = true;
-
-                        while (isListenAServer) {
-                            Message message = new Message();
-                            byte[] bytes = new byte[1024 * 2];
-
-                            Log.i("SECURE-CAM", "Waiting a command ...");
-                            listenServerInputStrem = socket.getInputStream();
-                            listenServerInputStrem.read(bytes);
-
-                            String response = new String(bytes).trim();
-                            Log.i("SECURE-CAM", "Recieved Response: " + response);
-
-                            if(isListenAServer) {
-                                Log.i("SECURE-CAM", "Sending Response to WebCam ...");
-                                message.getData().putString(CAM_SERVER_COMMAND_TAG, response);
-                                WebCamHandlerSIngleton.getHandler().sendMessage(message);
-                            }
-                        }
-
-                    }
+                    listenServerReciveCommander();
                 } catch (AlreadyListeningAServer e){
                     Message message = new Message();
                     message.getData().putString(CAM_SERVER_COMMAND_FAIL, e.getMessage());
@@ -174,11 +106,34 @@ public class ConnectionServiceProvider extends Service {
                     isListenAServer = false;
                     e.printStackTrace();
                 }
-
-                listenServerInputStrem = null;
             }
         };
         new Thread(runnable).start();
+    }
+
+    private void listenServerReciveCommander() throws IOException {
+        if (isListenAServer){
+            throw new AlreadyListeningAServer();
+        } else {
+            isListenAServer = true;
+            while (isListenAServer) {
+                Message message = new Message();
+                byte[] bytes = new byte[1024];
+
+                Log.i("SECURE-CAM", "Waiting a command ...");
+                InputStream listenServerInputStrem = socket.getInputStream();
+                listenServerInputStrem.read(bytes);
+
+                String response = new String(bytes).trim();
+                Log.i("SECURE-CAM", "Recieved Response: " + response);
+
+                if(isListenAServer) {
+                    Log.i("SECURE-CAM", "Sending Response to WebCam ...");
+                    message.getData().putString(CAM_SERVER_COMMAND_TAG, response);
+                    WebCamHandlerSIngleton.getHandler().sendMessage(message);
+                }
+            }
+        }
     }
 
     private void connectToServer() {
@@ -224,7 +179,7 @@ public class ConnectionServiceProvider extends Service {
                 socket.getInputStream().read(bytes);
                 String serverResponse = new String(bytes).trim();
 
-                doForConnectionResponse(serverResponse);
+                connectResponse(serverResponse);
             }else{
                 Socket socketPing = new Socket(HOST, PORT);
                 socketPing.getOutputStream().write(CAM_SERVER_PING_ASK.getBytes());
@@ -246,7 +201,7 @@ public class ConnectionServiceProvider extends Service {
         }
     }
 
-    private void doForConnectionResponse(String serverResponse) throws NotRegistredCamCode {
+    private void connectResponse(String serverResponse) throws NotRegistredCamCode {
 
         if(code.equals(CAM_SERVER_REQUEST_CODE)) {
             code = serverResponse;

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 import android.content.Context;
@@ -38,18 +37,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CAM_PREF_CODE_TAG;
+import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CAM_SERVER_COMMAND_FLASHLIGHT;
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CAM_SERVER_COMMAND_RECORD_A_MINUT;
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CAM_SERVER_COMMAND_STREAM;
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CAM_SERVER_COMMAND_TAG;
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_COMAND_TAG;
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_LISTEN;
 import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_LISTEN_STOP;
-import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_SEND_A_FRAME;
-import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY;
-import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_START;
+//import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_SEND_A_FRAME;
+//import static com.example.wensttay.securecam_project.ConnectionServiceProvider.CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY;
 
 import com.example.wensttay.securecam_project.ConnectionServiceProvider;
-import com.example.wensttay.securecam_project.WebCamSurfaceView;
+import com.example.wensttay.securecam_project.surface.WebCamSurfaceView;
 import com.example.wensttay.securecam_project.R;
 import com.example.wensttay.securecam_project.handler.WebCamHandlerSIngleton;
 
@@ -93,42 +92,70 @@ public class WebCamActivity extends AppCompatActivity implements Handler.Callbac
     public Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            //
-            // VERIFICAR SE O CAMANDO FOI DE TRANSMITIR O VIDEO AQUI
-            //
             if(!recording && streaming) {
-                Camera.Parameters parameters = camera.getParameters();
-                int width = parameters.getPreviewSize().width;
-                int height = parameters.getPreviewSize().height;
-
-                YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                yuv.compressToJpeg(new Rect(0, 0, width, height), 50, out);
-
-                byte[] bytes = out.toByteArray();
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                if (bmp != null) {
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 1, stream);
-                    byte[] byteArray = stream.toByteArray();
-
-                    Intent intent = new Intent(WebCamActivity.this, ConnectionServiceProvider.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_SEND_A_FRAME);
-                    bundle.putByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY, byteArray);
-                    intent.putExtras(bundle);
-                    startService(intent);
-                }
+                // STREAMING A TO SERVER
+//                Camera.Parameters parameters = camera.getParameters();
+//                int width = parameters.getPreviewSize().width;
+//                int height = parameters.getPreviewSize().height;
+//
+//                YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
+//
+//                ByteArrayOutputStream out = new ByteArrayOutputStream();
+//                yuv.compressToJpeg(new Rect(0, 0, width, height), 50, out);
+//
+//                byte[] bytes = out.toByteArray();
+//                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//
+//                if (bmp != null) {
+//                    bmp.compress(Bitmap.CompressFormat.JPEG, 1, stream);
+//                    byte[] byteArray = stream.toByteArray();
+//
+//                    Intent intent = new Intent(WebCamActivity.this, ConnectionServiceProvider.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_SEND_A_FRAME);
+//                    bundle.putByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY, byteArray);
+//                    intent.putExtras(bundle);
+//                    startService(intent);
+//                }
             }
         }
     };
 
+    private void sendToServer() throws FileNotFoundException {
+        // SEND TO SERVER A 1 minut FILE SAVED
 
-//    private TextView switchCamera;
-//    private boolean cameraFront = false;
+//        final File myFile = new File(outputFileName);
+//        byte[] mybytearray = new byte[1024 * 100];
+//
+//        FileInputStream fis = new FileInputStream(myFile);
+//        BufferedInputStream bis = new BufferedInputStream(fis);
+//        DataInputStream dis = new DataInputStream(bis);
+//
+//        try {
+//            int read = -1;
+//            Intent intent = new Intent(WebCamActivity.this, ConnectionServiceProvider.class);
+//            Bundle bundle = new Bundle();
+//
+//            while((read = dis.read(mybytearray)) != -1){
+//                bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_SEND_A_FRAME);
+//                bundle.putByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY, mybytearray);
+//                intent.putExtras(bundle);
+//                startService(intent);
+//            }
+//            bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_SEND_A_FRAME);
+//            bundle.putByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY, "<-FIM->\r\n".getBytes());
+//            intent.putExtras(bundle);
+//            startService(intent);
 
+//            dis.close();
+//            bis.close();
+//            fis.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -159,6 +186,27 @@ public class WebCamActivity extends AppCompatActivity implements Handler.Callbac
 //        if(mOrientationEventListener.canDetectOrientation()) {
 //            mOrientationEventListener.enable();
 //        }
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        String comand = msg.getData().getString(CAM_SERVER_COMMAND_TAG);
+
+        switch (comand) {
+            case CAM_SERVER_COMMAND_RECORD_A_MINUT:
+                if(!streaming) {
+                    startCapture();
+                }
+                break;
+            case CAM_SERVER_COMMAND_STREAM:
+                if(!recording) {
+                    streaming = true;
+                }
+                break;
+            case CAM_SERVER_COMMAND_FLASHLIGHT:
+                flashButton.callOnClick();
+        }
+        return false;
     }
 
     @Override
@@ -255,49 +303,12 @@ public class WebCamActivity extends AppCompatActivity implements Handler.Callbac
 
     }
 
-    private void sendToServer() throws FileNotFoundException {
-        final File myFile = new File(outputFileName);
-        byte[] mybytearray = new byte[1024 * 100];
-
-        FileInputStream fis = new FileInputStream(myFile);
-        BufferedInputStream bis = new BufferedInputStream(fis);
-        DataInputStream dis = new DataInputStream(bis);
-
-        try {
-            int read = -1;
-            Intent intent = new Intent(WebCamActivity.this, ConnectionServiceProvider.class);
-            Bundle bundle = new Bundle();
-
-            while((read = dis.read(mybytearray)) != -1){
-                bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_SEND_A_FRAME);
-                bundle.putByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY, mybytearray);
-                intent.putExtras(bundle);
-                startService(intent);
-            }
-
-            bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_SEND_A_FRAME);
-            bundle.putByteArray(CONNECTION_PROV_SEND_A_FRAME_BYTEARRAY, "<-FIM->\r\n".getBytes());
-            intent.putExtras(bundle);
-            startService(intent);
-
-//            bundle.putString(CONNECTION_PROV_COMAND_TAG, CONNECTION_PROV_LISTEN_STOP);
-//            intent.putExtras(bundle);
-//            startService(intent);
-
-            dis.close();
-            bis.close();
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     private void stopAndSaveCapture() {
         // stop recording and release camera
         mediaRecorder.stop(); // stop the recording
         releaseMediaRecorder(); // release the MediaRecorder object
         mPreview.refreshCamera(mCamera);
+
         Toast.makeText(WebCamActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
         recording = false;
     }
@@ -456,24 +467,9 @@ public class WebCamActivity extends AppCompatActivity implements Handler.Callbac
         }
     }
 
-    @Override
-    public boolean handleMessage(Message msg) {
-        String comand = msg.getData().getString(CAM_SERVER_COMMAND_TAG);
 
-        switch (comand) {
-            case CAM_SERVER_COMMAND_RECORD_A_MINUT:
-                if(!streaming) {
-                    startCapture();
-                }
-                break;
-            case CAM_SERVER_COMMAND_STREAM:
-                if(!recording) {
-                    streaming = true;
-                }
-        }
-
-        return false;
-    }
+    //    private TextView switchCamera;
+    //    private boolean cameraFront = false;
 //    private int findFrontFacingCamera() {
 //        int cameraId = -1;
 //        // Search for the front facing camera
